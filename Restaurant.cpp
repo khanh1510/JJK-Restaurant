@@ -172,6 +172,7 @@ class imp_res : public Restaurant
 				}
 			}
 			else if (numCustomer >= 0 && numCustomer < MAXSIZE/2) {		//First way to go to Restaurant
+				cout << "THis code is running" << endl;
 				if (cus->energy == 0) {		//engergy = 0 get out of here
 					return;
 				}
@@ -179,26 +180,57 @@ class imp_res : public Restaurant
 					return;
 				}
 				else {		//energy is not equal 0, we push them to Restaurant
+					cout << "Run code" << endl;
 					if (numCustomer == 0) {
 						head = cus;
 						head->next = head;
 						head->prev = head;
 						X = head;
+
+						numCustomer++;
 					}
 					else {
+						cout << "Fck" << endl;
 						if (cus->energy >= X->energy) {
 							AddCusAfter(cus, X);
 							X = cus;
+							FiFOCustomer.addTail(name, energy);
 						}
 						else {
 							AddCusBefore(cus, X);
 							X = cus;
+							FiFOCustomer.addTail(name, energy);
 						}
 					}
 				}
 			}
 			else {		//numCustomer >= maxsize/2, change the way we push them into restaurant
-				
+				int max_abs_energy = 0;
+				customer* cus_to_add = this->head;
+				customer* temp = this->head;
+
+				for (int i = 0; i < numCustomer; i++) {
+					int RES = abs(cus->energy - temp->energy);
+					if ( RES > max_abs_energy ) {
+						cus_to_add = temp;
+						max_abs_energy = RES;
+					}
+					else {
+						temp = temp->next;
+					}
+				}
+
+				if ((cus->energy - cus_to_add->energy) > 0) {
+					AddCusAfter(cus, cus_to_add);
+					X = cus;
+					FiFOCustomer.addTail(name, energy);
+					
+				}
+				else {
+					AddCusBefore(cus, cus_to_add);			
+					X = cus;
+					FiFOCustomer.addTail(name, energy);
+				}
 			}
 
 			
@@ -227,5 +259,11 @@ class imp_res : public Restaurant
 		void LIGHT(int num)
 		{
 			cout << "light " << num << endl;
+			customer* temp = head;
+			do{
+				cout << temp->name << "  |  ";
+				temp = temp->next;
+			}
+			while (temp != head);
 		}
 };
