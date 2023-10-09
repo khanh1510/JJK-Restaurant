@@ -172,7 +172,6 @@ class imp_res : public Restaurant
 				}
 			}
 			else if (numCustomer >= 0 && numCustomer < MAXSIZE/2) {		//First way to go to Restaurant
-				cout << "THis code is running" << endl;
 				if (cus->energy == 0) {		//engergy = 0 get out of here
 					return;
 				}
@@ -180,7 +179,6 @@ class imp_res : public Restaurant
 					return;
 				}
 				else {		//energy is not equal 0, we push them to Restaurant
-					cout << "Run code" << endl;
 					if (numCustomer == 0) {
 						head = cus;
 						head->next = head;
@@ -190,7 +188,6 @@ class imp_res : public Restaurant
 						numCustomer++;
 					}
 					else {
-						cout << "Fck" << endl;
 						if (cus->energy >= X->energy) {
 							AddCusAfter(cus, X);
 							X = cus;
@@ -259,11 +256,34 @@ class imp_res : public Restaurant
 		void LIGHT(int num)
 		{
 			cout << "light " << num << endl;
-			customer* temp = head;
-			do{
-				cout << temp->name << "  |  ";
-				temp = temp->next;
+			
+			if (num == 0) {
+				Node* temp = queCustomer.head;
+
+				while (temp != nullptr) {
+					cout << temp->name << "-" << temp->energy << endl;
+					temp = temp->next;
+				}
 			}
-			while (temp != head);
+			else {
+				if (num > 0) {
+					customer* temp = X;
+
+					do {
+						cout << temp->name << "-" << temp->energy << endl;
+						temp = temp->next;
+					}
+					while (temp != X);
+				}
+				else {
+					customer* temp = X;
+
+					do {
+						cout << temp->name << "-" << temp->energy << endl;
+						temp = temp->prev;
+					}
+					while (temp != X);
+				}
+			}
 		}
 };
