@@ -320,17 +320,59 @@ class imp_res : public Restaurant
 				//Dang viet den doan sau khi duoi N khach di khoi ban an
 				//Gio can viet them tu hang cho vao trong ban an
 
-				if (queCustomer.getSize() > 0) {
-					
-				}
-				else {
-					return;
+				while (numCustomer < MAXSIZE && queCustomer.size > 0) {
+					//Tao mot customer lay tu Head cua hang cho, roi xoa phan tu dau hang cho
+					customer* que_to_restaurant  = new customer(queCustomer.head->name, queCustomer.head->energy, nullptr, nullptr);
+					queCustomer.removeHead();
+
+					if (numCustomer > 0 && numCustomer < MAXSIZE/2) {		//Cach thu nhat de chon cho ngoi
+						if (que_to_restaurant->energy >= X->energy) {
+							AddCusAfter(que_to_restaurant, X);
+							X = que_to_restaurant;
+							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
+						}
+						else {
+							AddCusBefore(que_to_restaurant, X);
+							X = que_to_restaurant;
+							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
+						}
+					}
+					else {			//Khi ban an vuot qua 1/2 MAXSIZE
+						int max_abs_energy = 0;
+						customer* cus_to_add = this->head;
+						customer* temp = this->head;
+
+						for (int i = 0; i < numCustomer; i++) {
+							int RES = abs(que_to_restaurant->energy - temp->energy);
+							if ( RES > max_abs_energy ) {
+								cus_to_add = temp;
+								max_abs_energy = RES;
+							}
+							else {
+								temp = temp->next;
+							}
+						}
+
+						if ((que_to_restaurant->energy - cus_to_add->energy) > 0) {
+							AddCusAfter(que_to_restaurant, cus_to_add);
+							X = que_to_restaurant;
+							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
+							
+						}
+						else {
+							AddCusBefore(que_to_restaurant, cus_to_add);			
+							X = que_to_restaurant;
+							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
+						}
+
+					}
 				}
 			}
 		}
 		void PURPLE()
 		{
 			cout << "purple"<< endl;
+			
 		}
 		void REVERSAL()
 		{
