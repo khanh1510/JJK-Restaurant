@@ -91,6 +91,59 @@ class LinkedList{
 			this->size = 0;
 
 		}
+
+		//Find the largest abs value in the queCustomer
+		Node* maxAbsCustomer() {		
+			Node* temp = head;
+			
+			int max = abs(temp->energy);
+			Node* returnNode = head;
+			
+			while (temp != nullptr) {
+				if ( abs(temp->energy) >= max ) {
+					returnNode = temp;
+					max = abs(temp->energy);
+				}
+
+				temp = temp->next;
+			}
+
+			return returnNode;
+		}
+
+		//Shell Sort for a Linked List
+		int ShellSort(Node* head, Node* last) {
+			int n = 0;
+			Node* current = head;
+			while (current != last) {
+				n++;
+				current = current->next;
+			}
+
+			int swapCount = 0;
+
+			for (int cha = size/2; cha > 0; cha /= 2) {
+				for (int i = cha; i < size; i++) {
+					int temp = 0;
+					current = head;
+					for (int j = 0; j < i - cha; j++) {
+						current = current->next;
+					}
+					Node* current2 = current->next;
+
+					while (current2 != last && current2->energy < current2->next->energy) {
+						temp = current2->energy;
+						current2->energy = current2->next->energy;
+						current2->next->energy = temp;
+						current2 = current2->next;
+						swapCount++;
+					}
+				}
+			}
+
+			return swapCount;
+		}
+
 		// void ShellSort() {		//Do it later
 		// 	int count = size;
 
@@ -372,11 +425,20 @@ class imp_res : public Restaurant
 		void PURPLE()
 		{
 			cout << "purple"<< endl;
+
+			if (queCustomer.size == 0 || queCustomer.size == 1) {
+				return;
+			}
+			else {
+				int N = queCustomer.ShellSort(queCustomer.head, queCustomer.maxAbsCustomer());
+				BLUE(N);
+			}
 			
 		}
 		void REVERSAL()
 		{
 			cout << "reversal" << endl;
+			
 		}
 		void UNLIMITED_VOID()
 		{
