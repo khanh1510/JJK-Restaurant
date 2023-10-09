@@ -151,6 +151,66 @@ class imp_res : public Restaurant
 			return false;
 		}
 
+		void delCustomer() {
+			if (!head) {
+				return;
+			}
+			
+			customer* current = head;
+			do {
+				customer* temp = current;
+				current = current->next;
+				delete temp;
+			}
+			while (current != head);
+
+			delete current;
+
+			head = nullptr;
+
+			numCustomer = 0;
+		}
+
+		void del_Name_customer(string na) {
+			if (!head) {
+				return;
+			}
+
+			customer* temp = head;
+			do {
+				if (temp->name == na) {
+					if (temp == head && head->next == head) {		//if there left one customer
+						delete temp;
+						head = nullptr;
+
+						numCustomer--;
+						return;
+					}
+					else if (temp == head) {		//if we need delete first customer
+						customer* tail = head->prev;
+						head = head->next;
+						tail->next = head;
+						head->prev = tail;
+						delete temp;
+
+						numCustomer--;
+						return;
+					}
+					else {		//if delete any node in linked list
+						customer* prevNode = temp->prev;
+						customer* nextNode = temp->next;
+						prevNode->next = nextNode;
+						nextNode->prev = prevNode;
+						delete temp;
+
+						numCustomer--;
+						return;
+					}
+				}
+				temp = temp->next;
+			} while (temp != head);
+		}
+
 
 
 		void RED(string name, int energy)
@@ -228,14 +288,45 @@ class imp_res : public Restaurant
 					X = cus;
 					FiFOCustomer.addTail(name, energy);
 				}
-			}
-
-			
-			
+			}	
 		}
-		void BLUE(int num)
+		void BLUE(int num)		//Invite customer get out of here
 		{
 			cout << "blue "<< num << endl;
+			if (num >= numCustomer) {		//we throw all of them
+				delCustomer();
+				FiFOCustomer.delALL();
+			}
+			else {		//Not throw all customer
+				for (int i = 0; i < num; i++) {
+					string find_name = FiFOCustomer.getHead()->name;
+
+					customer* temp = head;
+					while (temp->name != find_name) {
+						temp = temp->next;
+					}
+
+					if (temp->energy > 0) {
+						X = temp->next;
+					}
+					else {
+						X = temp->prev;
+					}
+
+					del_Name_customer(find_name);
+					FiFOCustomer.removeHead();
+				}
+
+				//Dang viet den doan sau khi duoi N khach di khoi ban an
+				//Gio can viet them tu hang cho vao trong ban an
+
+				if (queCustomer.getSize() > 0) {
+					
+				}
+				else {
+					return;
+				}
+			}
 		}
 		void PURPLE()
 		{
