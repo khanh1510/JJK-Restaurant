@@ -67,6 +67,16 @@ class LinkedList{
 			
 		}
 
+		//This function is add a new Node at the first of the linked list
+		void addHead(string na, int ene) {
+			Node* newNode = new Node(na, ene);
+
+			newNode->next = head;
+			head = newNode;
+
+			size++;
+		}
+
 		Node* getHead() {
 			return head;
 		}
@@ -264,6 +274,35 @@ class imp_res : public Restaurant
 			} while (temp != head);
 		}
 
+		//This function calculate sum of all energy
+		int sumEnergy(int i) {
+			customer* temp = head;
+			int sum = 0;
+
+			if (i == 1) { 			//Calculate sum of energy of Mahotsukai
+				do {
+					if (temp->energy > 0) {
+						sum += temp->energy;
+					}
+
+					temp = temp->next;
+				}
+				while (temp != head);
+			}
+			else {					//Calculate sum of energy of Onryo
+				do {
+					if (temp->energy > 0) {
+						sum += abs(temp->energy);
+					}
+
+					temp = temp->next;
+				}
+				while (temp != head);
+			}
+			
+			return sum;
+		}
+
 
 
 		void RED(string name, int energy)
@@ -345,7 +384,7 @@ class imp_res : public Restaurant
 		}
 		void BLUE(int num)		//Invite customer get out of here
 		{
-			cout << "blue "<< num << endl;
+			
 			if (num >= numCustomer) {		//we throw all of them
 				delCustomer();
 				FiFOCustomer.delALL();
@@ -421,11 +460,12 @@ class imp_res : public Restaurant
 					}
 				}
 			}
+
+			cout << "blue "<< num << endl;
 		}
 		void PURPLE()
 		{
-			cout << "purple"<< endl;
-
+			
 			if (queCustomer.size == 0 || queCustomer.size == 1) {
 				return;
 			}
@@ -433,12 +473,64 @@ class imp_res : public Restaurant
 				int N = queCustomer.ShellSort(queCustomer.head, queCustomer.maxAbsCustomer());
 				BLUE(N);
 			}
+
+			cout << "purple"<< endl;
+
 			
 		}
 		void REVERSAL()
 		{
+
+			if (numCustomer == 0 || numCustomer == 1) {		//If num Customer is 0 or 1 just do nothing
+				return;
+			}
+			LinkedList positive;
+			LinkedList negative;
+			customer* temp = X;
+
+			for (int i = 0; i < numCustomer; i++) {
+				if (temp->energy > 0) {
+					positive.addHead(temp->name, temp->energy);
+				}
+				else {
+					negative.addHead(temp->name, temp->energy);
+				}
+
+				temp = temp->prev;
+			}
+
+			string name_Of_X = X->name;
+			//int energy_Of_X = X->energy;
+
+			temp = temp->prev;
+
+			for (int i = 0; i < numCustomer; i++) {
+				if (temp->energy > 0) {
+					temp->energy = positive.head->energy;
+					temp->name = positive.head->name;
+
+					positive.removeHead();
+				}
+				else {
+					temp->energy = negative.head->energy;
+					temp->name = negative.head->name;
+
+					negative.removeHead();
+				}
+
+				temp = temp->prev;
+			}
+
+			temp = temp->prev;
+
+			for (int j = 0; j < numCustomer; j++) {
+				if (temp->name == name_Of_X) {
+					X = temp;
+				}
+			}
+
 			cout << "reversal" << endl;
-			
+
 		}
 		void UNLIMITED_VOID()
 		{
@@ -446,6 +538,8 @@ class imp_res : public Restaurant
 		}
 		void DOMAIN_EXPANSION()
 		{
+
+
 			cout << "domain_expansion" << endl;
 		}
 		void LIGHT(int num)
