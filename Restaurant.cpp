@@ -6,6 +6,8 @@ class Node {
 	public:
 		string name;
 		int energy;
+		int time;
+		int max_time;
 		Node* next;
 
 		Node() {
@@ -16,6 +18,8 @@ class Node {
 			this->energy = ene;
 			this->name = na;
 			this->next = nullptr;
+			this->time = 0;
+			this->max_time = 0;
 		}
 };
 
@@ -48,11 +52,12 @@ class LinkedList{
 			}
 		}
 
+		//This function is add a new Node at the end of the linked list
 		void addTail(string na, int ene) {
-			Node* temp = new Node(na, ene);
+			Node* newNode = new Node(na, ene);
 
 			if (head == nullptr) {
-				head = temp;
+				head = newNode;
 			}
 			else {
 				Node* tempo = head;
@@ -60,7 +65,13 @@ class LinkedList{
 					tempo = tempo->next;
 				}
 
-				tempo->next = temp;
+				//Khuc nay chi de tinh toan thoi gian
+				//Toi khong chac la no co dung hay khong
+				newNode->time = tempo->max_time++;
+				newNode->max_time = newNode->time;
+
+				tempo->next = newNode;
+
 			}
 
 			size++;
@@ -73,6 +84,9 @@ class LinkedList{
 
 			newNode->next = head;
 			head = newNode;
+
+			newNode->time = newNode->max_time++;		//Gan gia tri thoi gian cho hang doi
+			newNode->max_time = newNode->time;
 
 			size++;
 		}
@@ -90,6 +104,31 @@ class LinkedList{
 			}
 
 		}
+
+		//This function is delete a any Node in Linked list
+		void delNode(string na) {
+			Node* current = head;
+			Node* prev = nullptr;
+
+			while (current) {
+				if (current->name == na) {
+					if (prev) {
+						prev->next = current->next;
+					}
+					else {
+						head = current->next;
+					}
+
+					delete current;
+					return;
+				}
+
+				prev = current;
+				current = current->next;
+			}
+		}
+
+
 		void delALL() {
 			Node* temp = head;
 			while (temp != nullptr) {
@@ -141,7 +180,7 @@ class LinkedList{
 					}
 					Node* current2 = current->next;
 
-					while (current2 != last && current2->energy < current2->next->energy) {
+					while ( current2 != last && abs(current2->energy) > abs(current2->next->energy) ) {
 						temp = current2->energy;
 						current2->energy = current2->next->energy;
 						current2->next->energy = temp;
@@ -235,7 +274,7 @@ class imp_res : public Restaurant
 		}
 
 		void del_Name_customer(string na) {
-			if (!head) {
+			if (!head || na == "") {
 				return;
 			}
 
@@ -299,7 +338,7 @@ class imp_res : public Restaurant
 				}
 				while (temp != head);
 			}
-			
+
 			return sum;
 		}
 
@@ -355,8 +394,8 @@ class imp_res : public Restaurant
 			}
 			else {		//numCustomer >= maxsize/2, change the way we push them into restaurant
 				int max_abs_energy = 0;
-				customer* cus_to_add = this->head;
-				customer* temp = this->head;
+				customer* cus_to_add = this->X;
+				customer* temp = this->X;
 
 				for (int i = 0; i < numCustomer; i++) {
 					int RES = abs(cus->energy - temp->energy);
@@ -536,9 +575,24 @@ class imp_res : public Restaurant
 		{
 			cout << "unlimited_void" << endl;
 		}
-		void DOMAIN_EXPANSION()
+		void DOMAIN_EXPANSION()			//Kick the customers
 		{
+			if ( sumEnergy(1) > sumEnergy(0) ) {		//If sum of Mahotsukai larger than Onryo
+				Node* temp = FiFOCustomer.head;
+				string kick_name = "";
 
+				do {
+					kick_name = temp->name;
+					del_Name_customer(kick_name);
+					
+					
+				}
+
+
+			}
+			else {		//If sum of Onryo larger than Mahotsukai
+				
+			}
 
 			cout << "domain_expansion" << endl;
 		}
