@@ -573,26 +573,61 @@ class imp_res : public Restaurant
 		}
 		void UNLIMITED_VOID()
 		{
+			if (numCustomer < 4) {
+				return;
+			}
+			int min_energy = X->energy;
+			int last_min_energy = X->energy;
+			int current_energy = 0;
+			int current_length = 0;
+			customer* min_energy_start = nullptr;
+
+			customer* current = X;
+			customer* start = X;
+
+			do {
+				current_energy += current->energy;
+				current_length++;
+
+				//Check if we found the min energy
+				if (current_energy < min_energy && current_length >= 4) {
+					min_energy = current_energy;
+					min_energy_start = start;
+					last_min_energy = min_energy;
+				}
+				else if (current_energy == last_min_energy) {
+					last_min_energy = current_energy;
+				}
+
+				current = current->next;
+
+				if (current == X) {
+					start = start->next;
+					current = start;
+					current_energy = 0;
+					current_length = 0;
+				}
+			}
+			while (current != X);
+
+			//We print all customer in the min ENERGY
+			if (min_energy_start) {
+				cout << "Day con co tong ENERGY nho nhat: " << min_energy << endl;
+				current = min_energy_start;
+				do {
+					cout << current->name << "-" << current->energy << endl;
+					current = current->next;
+				}
+				while (current != min_energy_start);
+			}
+
+			
+
 			cout << "unlimited_void" << endl;
 		}
 		void DOMAIN_EXPANSION()			//Kick the customers
 		{
-			if ( sumEnergy(1) > sumEnergy(0) ) {		//If sum of Mahotsukai larger than Onryo
-				Node* temp = FiFOCustomer.head;
-				string kick_name = "";
-
-				do {
-					kick_name = temp->name;
-					del_Name_customer(kick_name);
-					
-					
-				}
-
-
-			}
-			else {		//If sum of Onryo larger than Mahotsukai
-				
-			}
+			
 
 			cout << "domain_expansion" << endl;
 		}
