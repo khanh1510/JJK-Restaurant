@@ -6,8 +6,6 @@ class Node {
 	public:
 		string name;
 		int energy;
-		int time;
-		int max_time;
 		Node* next;
 
 		Node() {
@@ -18,8 +16,6 @@ class Node {
 			this->energy = ene;
 			this->name = na;
 			this->next = nullptr;
-			this->time = 0;
-			this->max_time = 0;
 		}
 };
 
@@ -65,11 +61,6 @@ class LinkedList{
 					tempo = tempo->next;
 				}
 
-				//Khuc nay chi de tinh toan thoi gian
-				//Toi khong chac la no co dung hay khong
-				newNode->time = tempo->max_time++;
-				newNode->max_time = newNode->time;
-
 				tempo->next = newNode;
 
 			}
@@ -84,9 +75,6 @@ class LinkedList{
 
 			newNode->next = head;
 			head = newNode;
-
-			newNode->time = newNode->max_time++;		//Gan gia tri thoi gian cho hang doi
-			newNode->max_time = newNode->time;
 
 			size++;
 		}
@@ -126,6 +114,8 @@ class LinkedList{
 				prev = current;
 				current = current->next;
 			}
+
+			size--;
 		}
 
 
@@ -205,6 +195,7 @@ class imp_res : public Restaurant
 	public:
 		LinkedList queCustomer;
 		LinkedList FiFOCustomer;
+		LinkedList TimerCustomer;
 		int numCustomer = 0;
 		customer* head = nullptr;
 		customer* X = nullptr;
@@ -218,6 +209,7 @@ class imp_res : public Restaurant
 			new_cus->next = temp;
 			new_cus->prev = X_cus;
 			temp->prev = new_cus;
+
 			numCustomer++;
 		}
 
@@ -359,6 +351,7 @@ class imp_res : public Restaurant
 					}
 					else {
 						queCustomer.addTail(name, energy);
+						TimerCustomer.addTail(name, energy);
 					}
 				}
 			}
@@ -380,19 +373,22 @@ class imp_res : public Restaurant
 					}
 					else {
 						if (cus->energy >= X->energy) {
-							AddCusAfter(cus, X);
-							X = cus;
-							FiFOCustomer.addTail(name, energy);
-						}
-						else {
 							AddCusBefore(cus, X);
 							X = cus;
 							FiFOCustomer.addTail(name, energy);
+							TimerCustomer.addTail(name, energy);
+						}
+						else {
+							AddCusAfter(cus, X);
+							X = cus;
+							FiFOCustomer.addTail(name, energy);
+							TimerCustomer.addTail(name, energy);
 						}
 					}
 				}
 			}
 			else {		//numCustomer >= maxsize/2, change the way we push them into restaurant
+				cout << "customer: " << cus->name;
 				int max_abs_energy = 0;
 				customer* cus_to_add = this->X;
 				customer* temp = this->X;
@@ -402,6 +398,8 @@ class imp_res : public Restaurant
 					if ( RES > max_abs_energy ) {
 						cus_to_add = temp;
 						max_abs_energy = RES;
+
+						temp = temp->next;
 					}
 					else {
 						temp = temp->next;
@@ -409,15 +407,17 @@ class imp_res : public Restaurant
 				}
 
 				if ((cus->energy - cus_to_add->energy) > 0) {
-					AddCusAfter(cus, cus_to_add);
+					AddCusBefore(cus, cus_to_add);
 					X = cus;
 					FiFOCustomer.addTail(name, energy);
+					TimerCustomer.addTail(name, energy);
 					
 				}
 				else {
-					AddCusBefore(cus, cus_to_add);			
+					AddCusAfter(cus, cus_to_add);			
 					X = cus;
 					FiFOCustomer.addTail(name, energy);
+					TimerCustomer.addTail(name, energy);
 				}
 			}	
 		}
@@ -520,6 +520,8 @@ class imp_res : public Restaurant
 		void REVERSAL()
 		{
 
+			cout << "reversal" << endl;
+
 			if (numCustomer == 0 || numCustomer == 1) {		//If num Customer is 0 or 1 just do nothing
 				return;
 			}
@@ -568,11 +570,14 @@ class imp_res : public Restaurant
 				}
 			}
 
-			cout << "reversal" << endl;
+			
 
 		}
 		void UNLIMITED_VOID()
 		{
+
+			cout << "unlimited_void" << endl;
+
 			if (numCustomer < 4) {
 				return;
 			}
@@ -623,13 +628,121 @@ class imp_res : public Restaurant
 
 			
 
-			cout << "unlimited_void" << endl;
+			
 		}
 		void DOMAIN_EXPANSION()			//Kick the customers
 		{
-			
-
 			cout << "domain_expansion" << endl;
+			if (numCustomer == 0 || numCustomer == 1) {
+				return;
+			}
+
+			if (sumEnergy(1) > sumEnergy(0)) {		//Neu nang luong cua chu thuat su lon hon oan linh thì đuổi hết oán linh
+				Node* temp_kick = FiFOCustomer.head;
+				Node* wait_kick = queCustomer.head;
+
+				while (temp_kick != nullptr) {
+					if (temp_kick->energy < 0) {
+						string name_to_kick = temp_kick->name;
+						temp_kick = temp_kick->next;
+
+						del_Name_customer(name_to_kick);
+						FiFOCustomer.delNode(name_to_kick);
+					}
+				}
+				//Toàn bộ khúc trên là xoá oán linh trong bàn ăn và trong cái FIFOcustomer
+				//Giờ cần phải xoá ở hàng chờ
+
+				while (wait_kick != nullptr) {
+					if (wait_kick->energy < 0) {
+						string name_wait_kick = wait_kick->name;
+						wait_kick = wait_kick->next;
+
+						queCustomer.delNode(name_wait_kick);
+					}
+				}
+			}
+			else {			//Đuổi hết chú thuật sư
+				Node* temp_kick = FiFOCustomer.head;
+				Node* wait_kick = queCustomer.head;
+
+				while (temp_kick != nullptr) {
+					if (temp_kick->energy > 0) {
+						string name_to_kick = temp_kick->name;
+						temp_kick = temp_kick->next;
+						del_Name_customer(name_to_kick);
+						FiFOCustomer.delNode(name_to_kick);
+					}
+				}
+
+				//Toàn bộ khúc trên là xoá chú thuật sư trong bàn ăn và trong FIFOcustomer
+				//GIờ cần phải xoá ở hàng chờ nữa
+
+				while (wait_kick != nullptr) {
+					if (wait_kick->energy > 0) {
+						string name_wait_kick = wait_kick->name;
+						wait_kick = wait_kick->next;
+
+						queCustomer.delNode(name_wait_kick);
+					}
+				}
+			}
+
+			//Toàn bộ trên đây là xoá khách khỏi nhà hàng
+			//Giờ cần phải làm thêm đó chính là nếu hàng đợi còn người thì thêm vô bàn ăn
+
+			while (numCustomer < MAXSIZE && queCustomer.size > 0) {
+					//Tao mot customer lay tu Head cua hang cho, roi xoa phan tu dau hang cho
+					customer* que_to_restaurant  = new customer(queCustomer.head->name, queCustomer.head->energy, nullptr, nullptr);
+					queCustomer.removeHead();
+
+					if (numCustomer > 0 && numCustomer < MAXSIZE/2) {		//Cach thu nhat de chon cho ngoi
+						if (que_to_restaurant->energy >= X->energy) {
+							AddCusAfter(que_to_restaurant, X);
+							X = que_to_restaurant;
+							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
+						}
+						else {
+							AddCusBefore(que_to_restaurant, X);
+							X = que_to_restaurant;
+							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
+						}
+					}
+					else {			//Khi ban an vuot qua 1/2 MAXSIZE
+						int max_abs_energy = 0;
+						customer* cus_to_add = this->head;
+						customer* temp = this->head;
+
+						for (int i = 0; i < numCustomer; i++) {
+							int RES = abs(que_to_restaurant->energy - temp->energy);
+							if ( RES > max_abs_energy ) {
+								cus_to_add = temp;
+								max_abs_energy = RES;
+							}
+							else {
+								temp = temp->next;
+							}
+						}
+
+						if ((que_to_restaurant->energy - cus_to_add->energy) > 0) {
+							AddCusAfter(que_to_restaurant, cus_to_add);
+							X = que_to_restaurant;
+							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
+							
+						}
+						else {
+							AddCusBefore(que_to_restaurant, cus_to_add);			
+							X = que_to_restaurant;
+							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
+						}
+
+					}
+				}
+
+			//In ra khách bị đuổi theo thứ tự ai đến sớm nhất thì 
+
+			
+			
 		}
 		void LIGHT(int num)
 		{
@@ -657,7 +770,7 @@ class imp_res : public Restaurant
 					customer* temp = X;
 
 					do {
-						cout << temp->name << "-" << temp->energy << endl;
+						cout << temp->name << "||" << temp->energy << endl;
 						temp = temp->prev;
 					}
 					while (temp != X);
