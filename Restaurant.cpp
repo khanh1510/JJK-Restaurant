@@ -385,14 +385,13 @@ class imp_res : public Restaurant
 						if (cus->energy >= X->energy) {
 							AddCusBefore(cus, X);
 							X = cus;
-							FiFOCustomer.addTail(name, energy);
 						}
 						else {
 							AddCusAfter(cus, X);
 							X = cus;
-							FiFOCustomer.addTail(name, energy);
 						}
 					}
+					FiFOCustomer.addTail(name, energy);
 					TimerCustomer.addTail(name, energy);
 				}
 			}
@@ -476,14 +475,18 @@ class imp_res : public Restaurant
 
 					head = nullptr;
 
+					X = nullptr;
+
 					numCustomer = 0;
 				}
 				delCustomer();
 				FiFOCustomer.delALL();
 			}
 			else {		//Not throw all customer
+				cout << "test" << endl;
 				for (int i = 0; i < num; i++) {
 					string find_name = FiFOCustomer.getHead()->name;
+					cout << find_name << endl;
 
 					customer* temp = head;
 					while (temp->name != find_name) {
@@ -499,6 +502,7 @@ class imp_res : public Restaurant
 
 					del_Name_customer(find_name);
 					FiFOCustomer.removeHead();
+					TimerCustomer.delNode(find_name);
 				}
 
 				//Dang viet den doan sau khi duoi N khach di khoi ban an
@@ -511,12 +515,12 @@ class imp_res : public Restaurant
 
 					if (numCustomer > 0 && numCustomer < MAXSIZE/2) {		//Cach thu nhat de chon cho ngoi
 						if (que_to_restaurant->energy >= X->energy) {
-							AddCusAfter(que_to_restaurant, X);
+							AddCusBefore(que_to_restaurant, X);
 							X = que_to_restaurant;
 							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
 						}
 						else {
-							AddCusBefore(que_to_restaurant, X);
+							AddCusAfter(que_to_restaurant, X);
 							X = que_to_restaurant;
 							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
 						}
@@ -810,6 +814,10 @@ class imp_res : public Restaurant
 				}
 			}
 			else {
+				if (numCustomer == 0 && queCustomer.size == 0) {
+					cout << "Nothing to print" << endl;
+					return;
+				}
 				if (num > 0) {
 					customer* temp = X;
 
