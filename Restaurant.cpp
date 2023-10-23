@@ -8,37 +8,27 @@ class Node {
 		int energy;
 		Node* next;
 
-		Node() {
-			next = nullptr;
-		}
 
-		Node(string na, int ene) {
-			this->energy = ene;
-			this->name = na;
+		Node(string name, int energy) {
+			this->energy = energy;
+			this->name = name;
 			this->next = nullptr;
 		}
 };
 
 class LinkedList{
 	public:
-		int size = 0;
+		int size;
 		Node* head;
 	public:
-		LinkedList() {
-			head = nullptr;
-		}
+		LinkedList() : head(nullptr), size(0) {}
 
 		int getSize() {
 			return this->size;
 		}
 
 		bool isEmpty() {
-			if (head == nullptr) {
-				return false;
-			}
-			else {
-				return true;
-			}
+			return head == nullptr;
 		}
 
 		//This function is add a new Node at the end of the linked list
@@ -46,7 +36,7 @@ class LinkedList{
 		void addTail(string na, int ene) {
 			Node* newNode = new Node(na, ene);
 
-			if (head == nullptr) {
+			if (isEmpty()) {
 				head = newNode;
 			}
 			else {
@@ -352,7 +342,9 @@ class imp_res : public Restaurant
 			customer *cus = new customer (name, energy, nullptr, nullptr);
 
 			if (numCustomer == MAXSIZE) {		//if restaurant is full we push them to queue
-				if (queCustomer.getSize() == MAXSIZE) {		//if queue is full, invite them to go house
+				//cout << "test pro" << endl;
+				//cout << "so luong hang doi: " << queCustomer.size << endl;
+				if (queCustomer.size == MAXSIZE) {		//if queue is full, invite them to go house
 					return;
 				}
 				else {		//if queue is not full push them to queue
@@ -362,6 +354,7 @@ class imp_res : public Restaurant
 					else {
 						queCustomer.addTail(name, energy);
 						TimerCustomer.addTail(name, energy);
+						//cout << "so luong customer: " << queCustomer.head->name << endl;
 					}
 				}
 			}
@@ -396,7 +389,7 @@ class imp_res : public Restaurant
 				}
 			}
 			else {		//numCustomer >= maxsize/2, change the way we push them into restaurant
-				cout << "customer: " << cus->name;
+				cout << "test" << endl;
 				int max_abs_energy = 0;
 				customer* cus_to_add = this->X;
 				customer* temp = this->X;
@@ -425,7 +418,8 @@ class imp_res : public Restaurant
 					FiFOCustomer.addTail(name, energy);
 				}
 				TimerCustomer.addTail(name, energy);
-			}	
+			}
+			//cout << "so luong customer: " << numCustomer << endl;	
 		}
 		//End RED function
 
@@ -452,6 +446,9 @@ class imp_res : public Restaurant
 
 		// 	numCustomer = 0;
 		// }
+			if (num == 0) {
+				return;		//Do nothing
+			}
 			if (num >= numCustomer) {		//we throw all of them
 				//Xoá trong bàn ăn, FiFo customer, và TimerCustomer
 				if (numCustomer == 0) {
@@ -479,8 +476,8 @@ class imp_res : public Restaurant
 
 					numCustomer = 0;
 				}
-				delCustomer();
-				FiFOCustomer.delALL();
+				//delCustomer();
+				//FiFOCustomer.delALL();
 			}
 			else {		//Not throw all customer
 				cout << "test" << endl;
