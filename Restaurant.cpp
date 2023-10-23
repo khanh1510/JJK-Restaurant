@@ -27,13 +27,6 @@ class LinkedList{
 		LinkedList() {
 			head = nullptr;
 		}
-		// string getName() {
-		// 	return this->name;
-		// }
-
-		// int getEnergy() {
-		// 	return this->energy;
-		// }
 
 		int getSize() {
 			return this->size;
@@ -49,6 +42,7 @@ class LinkedList{
 		}
 
 		//This function is add a new Node at the end of the linked list
+		//MAKE QUEUE, hang doi
 		void addTail(string na, int ene) {
 			Node* newNode = new Node(na, ene);
 
@@ -70,6 +64,7 @@ class LinkedList{
 		}
 
 		//This function is add a new Node at the first of the linked list
+		//MAKE STACK, tao ngan xep
 		void addHead(string na, int ene) {
 			Node* newNode = new Node(na, ene);
 
@@ -90,10 +85,14 @@ class LinkedList{
 				delete temp;
 				size--;
 			}
+			else {		//Nothing to delete
+				return;
+			}
 
 		}
 
 		//This function is delete a any Node in Linked list
+		//Delete Node with the Name of Node
 		void delNode(string na) {
 			Node* current = head;
 			Node* prev = nullptr;
@@ -118,7 +117,7 @@ class LinkedList{
 			size--;
 		}
 
-
+		//I think this funcion shouldn't use anymore
 		void delALL() {
 			Node* temp = head;
 			while (temp != nullptr) {
@@ -132,6 +131,7 @@ class LinkedList{
 		}
 
 		//Find the largest abs value in the queCustomer
+		//Hàm này chưa tính tới trường hợp là queue rỗng
 		Node* maxAbsCustomer() {		
 			Node* temp = head;
 			
@@ -151,6 +151,7 @@ class LinkedList{
 		}
 
 		//Shell Sort for a Linked List
+		//Shell sort còn sai cần phải viết lại
 		int ShellSort(Node* head, Node* last) {
 			int n = 0;
 			Node* current = head;
@@ -203,6 +204,7 @@ class imp_res : public Restaurant
 	public:	
 		imp_res() {};
 
+		//Thêm phần tử vào phía trước mặt của X
 		void AddCusBefore(customer* new_cus, customer* X_cus) {
 			customer* temp = X_cus->next;
 			X_cus->next = new_cus;
@@ -213,6 +215,7 @@ class imp_res : public Restaurant
 			numCustomer++;
 		}
 
+		//Thêm phần tử vào phía sau lưng của X
 		void AddCusAfter(customer* new_cus, customer* X_cus) {
 			customer* temp = X_cus->prev;
 			X_cus->prev = new_cus;
@@ -223,6 +226,8 @@ class imp_res : public Restaurant
 			numCustomer++;
 		}
 
+
+		//Kiểm tra xem thử cái tên đó có ở trong bàn ăn hay là ở trong hàng chờ hay không
 		bool isAtRestaurant_or_Queue(LinkedList queue, LinkedList fifo, string na) {
 			Node* temp1 = queue.head;
 			Node* temp2 = fifo.head;
@@ -245,6 +250,8 @@ class imp_res : public Restaurant
 			return false;
 		}
 
+
+		//Xoá tất cả con người trong linked list vòng
 		void delCustomer() {
 			if (!head) {
 				return;
@@ -265,6 +272,7 @@ class imp_res : public Restaurant
 			numCustomer = 0;
 		}
 
+		//Xoá người có tên trong bàn ăn
 		void del_Name_customer(string na) {
 			if (!head || na == "") {
 				return;
@@ -306,6 +314,8 @@ class imp_res : public Restaurant
 		}
 
 		//This function calculate sum of all energy
+		//Với i == 1 thì tính tổng năng lượng trong bàn ăn của chú thuật sư (Mahotsukai)
+		//Với i == 0 thì tính tổng năng lượng trong bàn ăn của oán linh (Onryo)
 		int sumEnergy(int i) {
 			customer* temp = head;
 			int sum = 0;
@@ -376,15 +386,14 @@ class imp_res : public Restaurant
 							AddCusBefore(cus, X);
 							X = cus;
 							FiFOCustomer.addTail(name, energy);
-							TimerCustomer.addTail(name, energy);
 						}
 						else {
 							AddCusAfter(cus, X);
 							X = cus;
 							FiFOCustomer.addTail(name, energy);
-							TimerCustomer.addTail(name, energy);
 						}
 					}
+					TimerCustomer.addTail(name, energy);
 				}
 			}
 			else {		//numCustomer >= maxsize/2, change the way we push them into restaurant
@@ -409,22 +418,66 @@ class imp_res : public Restaurant
 				if ((cus->energy - cus_to_add->energy) > 0) {
 					AddCusBefore(cus, cus_to_add);
 					X = cus;
-					FiFOCustomer.addTail(name, energy);
-					TimerCustomer.addTail(name, energy);
-					
+					FiFOCustomer.addTail(name, energy);					
 				}
 				else {
 					AddCusAfter(cus, cus_to_add);			
 					X = cus;
 					FiFOCustomer.addTail(name, energy);
-					TimerCustomer.addTail(name, energy);
 				}
+				TimerCustomer.addTail(name, energy);
 			}	
 		}
+		//End RED function
+
+		
+		//Để ý thêm là cần phải xoá cả trong Timer Queue
 		void BLUE(int num)		//Invite customer get out of here
 		{
+		// 	void delCustomer() {
+		// 	if (!head) {
+		// 		return;
+		// 	}
 			
+		// 	customer* current = head;
+		// 	do {
+		// 		customer* temp = current;
+		// 		current = current->next;
+		// 		delete temp;
+		// 	}
+		// 	while (current != head);
+
+		// 	delete current;
+
+		// 	head = nullptr;
+
+		// 	numCustomer = 0;
+		// }
 			if (num >= numCustomer) {		//we throw all of them
+				//Xoá trong bàn ăn, FiFo customer, và TimerCustomer
+				if (numCustomer == 0) {
+					//Do nothing
+					return;
+				}
+				else {
+					customer* current = head;
+					customer* nextNode;
+
+					do {
+						nextNode = current->next;
+						string delNem = current->name;
+						delete current;
+						current = nextNode;
+
+						FiFOCustomer.delNode(delNem);
+						TimerCustomer.delNode(delNem);
+					}
+					while (current != head);
+
+					head = nullptr;
+
+					numCustomer = 0;
+				}
 				delCustomer();
 				FiFOCustomer.delALL();
 			}
