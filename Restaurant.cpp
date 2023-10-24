@@ -182,7 +182,7 @@ class LinkedList{
 		}
 
 		int getSize(Node* endNode) {
-			int size = 0;
+			int size = 1;
 			Node* current = head;
 			while (current && current != endNode) {
 				size++;
@@ -192,22 +192,21 @@ class LinkedList{
 			return size;
 		}
 
-		void swap(int a, int b) {
-			string tempName = getNodeAt(a)->name;
-			int tempEnergy = getNodeAt(a)->energy;
+		void swappp(int a, int b) {
+			Node* nodeA = getNodeAt(a);
+			Node* nodeB = getNodeAt(b);
 
-			getNodeAt(a)->name = getNodeAt(b)->name;
-			getNodeAt(a)->energy = getNodeAt(b)->energy;
-
-			getNodeAt(b)->name = tempName;
-			getNodeAt(b)->energy = tempEnergy;
+			if (nodeA != nullptr && nodeB != nullptr) {
+				swap(nodeA->energy, nodeB->energy);
+				swap(nodeA->name, nodeB->name);
+			}
 		}
 
 		int inssort2(int n, int incr) {
 			int swapCount = 0;
 			for (int i = incr; i < n; i += incr) {
-				for (int j = i; (j >= incr) && (getNodeAt(j)->energy < getNodeAt(j-incr)->energy); j-=incr) {
-					swap(j, j-incr);
+				for (int j = i; (j >= incr) && (abs(getNodeAt(j)->energy) > abs(getNodeAt(j-incr)->energy)); j-=incr) {
+					swappp(j, j-incr);
 					swapCount++;
 				}
 			}
@@ -630,7 +629,7 @@ class imp_res : public Restaurant
 		}
 		void PURPLE()
 		{
-			
+			int totalCount = 0;
 			if (queCustomer.size == 0 || queCustomer.size == 1) {
 				return;
 			}
@@ -641,12 +640,12 @@ class imp_res : public Restaurant
 				//cout << "Testttt: " <<  << endl;
 
 				int saiz = queCustomer.getSize(queCustomer.getNodeName(nem));
-				cout << "Testttt: " << saiz  << endl;
 
-				int totalCount = queCustomer.shellSort(saiz);
-				//cout << "TOng " <<  totalCount << endl;
+				totalCount = queCustomer.shellSort(saiz);
 
 			}
+			BLUE(totalCount % MAXSIZE);
+
 
 			cout << "purple"<< endl;			
 		}
