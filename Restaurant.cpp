@@ -360,6 +360,7 @@ class imp_res : public Restaurant
 					if (temp == head && head->next == head) {		//if there left one customer
 						delete temp;
 						head = nullptr;
+						X = nullptr;
 
 						numCustomer--;
 						return;
@@ -369,6 +370,15 @@ class imp_res : public Restaurant
 						head = head->next;
 						tail->next = head;
 						head->prev = tail;
+
+						if (temp->name == X->name) {
+							if (X->energy > 0) {
+								X = X->next;
+							}
+							else {
+								X = X->prev;
+							}
+						}
 						delete temp;
 
 						numCustomer--;
@@ -379,6 +389,16 @@ class imp_res : public Restaurant
 						customer* nextNode = temp->next;
 						prevNode->next = nextNode;
 						nextNode->prev = prevNode;
+
+						if (temp->name == X->name) {
+							if (X->energy > 0) {
+								X = X->next;
+							}
+							else {
+								X = X->prev;
+							}
+						}
+						
 						delete temp;
 
 						numCustomer--;
@@ -415,7 +435,6 @@ class imp_res : public Restaurant
 				}
 				while (temp != head);
 			}
-
 			return sum;
 		}
 
@@ -423,6 +442,7 @@ class imp_res : public Restaurant
 
 		void RED(string name, int energy)
 		{
+			cout << "red" << endl;
 			cout << name << " " << energy << endl;
 			customer *cus = new customer (name, energy, nullptr, nullptr);
 			if (MAXSIZE == 1) {
@@ -451,7 +471,7 @@ class imp_res : public Restaurant
 				}
 			}
 			else if (numCustomer >= 0 && numCustomer < MAXSIZE/2) {		//First way to go to Restaurant
-				cout << "go to restaurant " << endl;
+				//cout << "go to restaurant " << endl;
 				if (cus->energy == 0) {		//engergy = 0 get out of here
 					return;
 				}
@@ -518,7 +538,7 @@ class imp_res : public Restaurant
 		//Để ý thêm là cần phải xoá cả trong Timer Queue
 		void BLUE(int num)		//Invite customer get out of here
 		{
-
+			cout << "blue "<< num << endl;
 			if (num == 0) {
 				return;		//Do nothing
 			}
@@ -625,10 +645,11 @@ class imp_res : public Restaurant
 				}
 			}
 
-			cout << "blue "<< num << endl;
+			
 		}
 		void PURPLE()
 		{
+			cout << "purple"<< endl;
 			int totalCount = 0;
 			if (queCustomer.size == 0 || queCustomer.size == 1) {
 				return;
@@ -647,7 +668,7 @@ class imp_res : public Restaurant
 			BLUE(totalCount % MAXSIZE);
 
 
-			cout << "purple"<< endl;			
+						
 		}
 		void REVERSAL()
 		{
@@ -700,9 +721,7 @@ class imp_res : public Restaurant
 				if (temp->name == name_Of_X) {
 					X = temp;
 				}
-			}
-
-			
+			}	
 
 		}
 		void UNLIMITED_VOID()
@@ -749,7 +768,7 @@ class imp_res : public Restaurant
 
 			//We print all customer in the min ENERGY
 			if (min_energy_start != nullptr) {
-				cout << "Day con co tong ENERGY nho nhat: " << min_energy << endl;
+				//cout << "Day con co tong ENERGY nho nhat: " << min_energy << endl;
 				current = min_energy_start;
 				do {
 					cout << current->name << "-" << current->energy << endl;
@@ -761,8 +780,9 @@ class imp_res : public Restaurant
 		void DOMAIN_EXPANSION()			//Kick the customers
 		{
 			cout << "domain_expansion" << endl;
-			cout << sumEnergy(1) << " " << sumEnergy(0) << endl;
+			//cout << sumEnergy(1) << " " << sumEnergy(0) << endl;
 			if (numCustomer == 0 || numCustomer == 1) {
+				//cout << "test" << endl;
 				return;
 			}
 
@@ -940,8 +960,8 @@ class imp_res : public Restaurant
 				}
 			}
 			else {
-				if (numCustomer == 0 && queCustomer.size == 0) {
-					cout << "Nothing to print" << endl;
+				if (numCustomer == 0) {
+					//cout << "Nothing to print" << endl;
 					return;
 				}
 				if (num > 0) {
@@ -957,7 +977,7 @@ class imp_res : public Restaurant
 					customer* temp = X;
 
 					do {
-						cout << temp->name << "||" << temp->energy << endl;
+						cout << temp->name << "-" << temp->energy << endl;
 						temp = temp->prev;
 					}
 					while (temp != X);
