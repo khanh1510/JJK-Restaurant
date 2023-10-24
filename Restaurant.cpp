@@ -98,7 +98,6 @@ class LinkedList{
 					}
 
 					delete current;
-					return;
 				}
 
 				prev = current;
@@ -358,8 +357,6 @@ class imp_res : public Restaurant
 			customer *cus = new customer (name, energy, nullptr, nullptr);
 
 			if (numCustomer == MAXSIZE) {		//if restaurant is full we push them to queue
-				//cout << "test pro" << endl;
-				//cout << "so luong hang doi: " << queCustomer.size << endl;
 				if (queCustomer.size == MAXSIZE) {		//if queue is full, invite them to go house
 					return;
 				}
@@ -370,7 +367,6 @@ class imp_res : public Restaurant
 					else {
 						queCustomer.addTail(name, energy);
 						TimerCustomer.addHead(name, energy);
-						//cout << "so luong customer: " << queCustomer.head->name << endl;
 					}
 				}
 			}
@@ -405,7 +401,6 @@ class imp_res : public Restaurant
 				}
 			}
 			else {		//numCustomer >= maxsize/2, change the way we push them into restaurant
-				cout << "test" << endl;
 				int max_abs_energy = 0;
 				customer* cus_to_add = this->X;
 				customer* temp = this->X;
@@ -435,7 +430,6 @@ class imp_res : public Restaurant
 				}
 				TimerCustomer.addHead(name, energy);
 			}
-			//cout << "so luong customer: " << numCustomer << endl;	
 		}
 		//End RED function
 
@@ -496,10 +490,8 @@ class imp_res : public Restaurant
 				//FiFOCustomer.delALL();
 			}
 			else {		//Not throw all customer
-				cout << "test" << endl;
 				for (int i = 0; i < num; i++) {
 					string find_name = FiFOCustomer.getHead()->name;
-					cout << find_name << endl;
 
 					customer* temp = head;
 					while (temp->name != find_name) {
@@ -716,7 +708,6 @@ class imp_res : public Restaurant
 					}
 					temp_kick = temp_kick->next;
 				}
-				//cout << numCustomer << endl;
 				//Toàn bộ khúc trên là xoá oán linh trong bàn ăn và trong cái FIFOcustomer
 				//Giờ cần phải xoá ở hàng chờ
 
@@ -742,14 +733,15 @@ class imp_res : public Restaurant
 				
 				//Xoa cac oan linh trong TimerCustomer
 				Node* tempo2 = TimerCustomer.head;
-				string removeName = "";
 				while (tempo2 != nullptr) {
 					if (tempo2->energy < 0) {
-						removeName = tempo2->name;
+						string removeName = tempo2->name;
+						tempo2 = tempo2->next;
+
+						TimerCustomer.delNode(removeName);
 					}
 
 					tempo2 = tempo2->next;
-					TimerCustomer.delNode(removeName);
 				}
 			}
 			else {			//Đuổi hết chú thuật sư
@@ -790,7 +782,6 @@ class imp_res : public Restaurant
 					}
 					temporary = temporary->next;
 				}
-				//cout << "OK" << TimerCustomer.size << endl;
 				//Xoa cac oan linh trong TimerCustomer
 				Node* tempo2 = TimerCustomer.head;
 				while (tempo2 != nullptr) {
@@ -805,7 +796,7 @@ class imp_res : public Restaurant
 					tempo2 = tempo2->next;
 				}
 			}
-			//cout << "test ok" << endl;
+
 
 			//Toàn bộ trên đây là xoá khách khỏi nhà hàng
 			//Giờ cần phải làm thêm đó chính là nếu hàng đợi còn người thì thêm vô bàn ăn
@@ -817,12 +808,12 @@ class imp_res : public Restaurant
 
 					if (numCustomer > 0 && numCustomer < MAXSIZE/2) {		//Cach thu nhat de chon cho ngoi
 						if (que_to_restaurant->energy >= X->energy) {
-							AddCusAfter(que_to_restaurant, X);
+							AddCusBefore(que_to_restaurant, X);
 							X = que_to_restaurant;
 							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
 						}
 						else {
-							AddCusBefore(que_to_restaurant, X);
+							AddCusAfter(que_to_restaurant, X);
 							X = que_to_restaurant;
 							FiFOCustomer.addTail(que_to_restaurant->name, que_to_restaurant->energy);
 						}
@@ -859,7 +850,7 @@ class imp_res : public Restaurant
 				}
 
 			//In ra khách bị đuổi theo thứ tự ai đến sớm nhất thì 
-
+			
 			
 			
 		}
