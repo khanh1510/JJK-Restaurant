@@ -123,6 +123,20 @@ class LinkedList{
 			return head;		//I think function always return temp not return head
 		}
 
+		//This function get name of node have energy
+		string getName(int ene) {
+			Node* temp = head;
+			while (temp != nullptr) {
+				if (temp->energy == ene) {
+					return temp->name;
+				}
+
+				temp = temp->next;
+			}
+
+			return "";
+		}
+
 		//I think this funcion shouldn't use anymore
 		void delALL() {
 			Node* temp = head;
@@ -138,7 +152,7 @@ class LinkedList{
 
 		//Find the largest abs value in the queCustomer
 		//Hàm này chưa tính tới trường hợp là queue rỗng
-		Node* maxAbsCustomer() {		
+		int maxAbsCustomer() {		
 			Node* temp = head;
 			
 			int max = abs(temp->energy);
@@ -153,42 +167,99 @@ class LinkedList{
 				temp = temp->next;
 			}
 
-			return returnNode;
+			return returnNode->energy;
 		}
 
-		//Shell Sort for a Linked List
-		//Shell sort còn sai cần phải viết lại
-		int ShellSort(Node* head, Node* last) {
-			int n = 0;
+		Node* getNodeAt(int index) {
+			int count = 0;
 			Node* current = head;
-			while (current != last) {
-				n++;
+			while (current && count < index) {
+				current = current->next;
+				count++;
+			}
+
+			return current;
+		}
+
+		int getSize(Node* endNode) {
+			int size = 0;
+			Node* current = head;
+			while (current && current != endNode) {
+				size++;
 				current = current->next;
 			}
 
+			return size;
+		}
+
+		void swap(int a, int b) {
+			string tempName = getNodeAt(a)->name;
+			int tempEnergy = getNodeAt(a)->energy;
+
+			getNodeAt(a)->name = getNodeAt(b)->name;
+			getNodeAt(a)->energy = getNodeAt(b)->energy;
+
+			getNodeAt(b)->name = tempName;
+			getNodeAt(b)->energy = tempEnergy;
+		}
+
+		int inssort2(int n, int incr) {
 			int swapCount = 0;
-
-			for (int cha = size/2; cha > 0; cha /= 2) {
-				for (int i = cha; i < size; i++) {
-					int temp = 0;
-					current = head;
-					for (int j = 0; j < i - cha; j++) {
-						current = current->next;
-					}
-					Node* current2 = current->next;
-
-					while ( current2 != last && abs(current2->energy) > abs(current2->next->energy) ) {
-						temp = current2->energy;
-						current2->energy = current2->next->energy;
-						current2->next->energy = temp;
-						current2 = current2->next;
-						swapCount++;
-					}
+			for (int i = incr; i < n; i += incr) {
+				for (int j = i; (j >= incr) && (getNodeAt(j)->energy < getNodeAt(j-incr)->energy); j-=incr) {
+					swap(j, j-incr);
+					swapCount++;
 				}
 			}
 
 			return swapCount;
 		}
+
+		int shellSort(int n) {
+			int totalSwap = 0;
+			for (int i = n/2; i > 2; i/=2) {
+				for (int j = 0; j < i; j++) {
+					totalSwap += inssort2(n-j, i);
+				}
+			}
+			totalSwap += inssort2(n, 1);
+
+			return totalSwap;
+		}
+
+		//Shell Sort for a Linked List
+		//Shell sort còn sai cần phải viết lại
+		// int ShellSort(Node* head, Node* last) {
+		// 	int n = 0;
+		// 	Node* current = head;
+		// 	while (current != last) {
+		// 		n++;
+		// 		current = current->next;
+		// 	}
+
+		// 	int swapCount = 0;
+
+		// 	for (int cha = size/2; cha > 0; cha /= 2) {
+		// 		for (int i = cha; i < size; i++) {
+		// 			int temp = 0;
+		// 			current = head;
+		// 			for (int j = 0; j < i - cha; j++) {
+		// 				current = current->next;
+		// 			}
+		// 			Node* current2 = current->next;
+
+		// 			while ( current2 != last && abs(current2->energy) > abs(current2->next->energy) ) {
+		// 				temp = current2->energy;
+		// 				current2->energy = current2->next->energy;
+		// 				current2->next->energy = temp;
+		// 				current2 = current2->next;
+		// 				swapCount++;
+		// 			}
+		// 		}
+		// 	}
+
+		// 	return swapCount;
+		// }
 
 		// void ShellSort() {		//Do it later
 		// 	int count = size;
@@ -355,9 +426,19 @@ class imp_res : public Restaurant
 		{
 			cout << name << " " << energy << endl;
 			customer *cus = new customer (name, energy, nullptr, nullptr);
+			if (MAXSIZE == 1) {
+				head = cus;
+				head->next = head;
+				head->prev = head;
+				X = head;
 
+				numCustomer++;
+
+				return;
+			}
 			if (numCustomer == MAXSIZE) {		//if restaurant is full we push them to queue
 				if (queCustomer.size == MAXSIZE) {		//if queue is full, invite them to go house
+					//cout << name << endl;
 					return;
 				}
 				else {		//if queue is not full push them to queue
@@ -371,6 +452,7 @@ class imp_res : public Restaurant
 				}
 			}
 			else if (numCustomer >= 0 && numCustomer < MAXSIZE/2) {		//First way to go to Restaurant
+				cout << "go to restaurant " << endl;
 				if (cus->energy == 0) {		//engergy = 0 get out of here
 					return;
 				}
@@ -437,25 +519,7 @@ class imp_res : public Restaurant
 		//Để ý thêm là cần phải xoá cả trong Timer Queue
 		void BLUE(int num)		//Invite customer get out of here
 		{
-		// 	void delCustomer() {
-		// 	if (!head) {
-		// 		return;
-		// 	}
-			
-		// 	customer* current = head;
-		// 	do {
-		// 		customer* temp = current;
-		// 		current = current->next;
-		// 		delete temp;
-		// 	}
-		// 	while (current != head);
 
-		// 	delete current;
-
-		// 	head = nullptr;
-
-		// 	numCustomer = 0;
-		// }
 			if (num == 0) {
 				return;		//Do nothing
 			}
@@ -571,7 +635,17 @@ class imp_res : public Restaurant
 				return;
 			}
 			else {
-				
+				int num = queCustomer.maxAbsCustomer();
+				//cout << "Testttt: " << num << endl;
+				string nem = TimerCustomer.getName(num);
+				//cout << "Testttt: " <<  << endl;
+
+				int saiz = queCustomer.getSize(queCustomer.getNodeName(nem));
+				cout << "Testttt: " << saiz  << endl;
+
+				int totalCount = queCustomer.shellSort(saiz);
+				//cout << "TOng " <<  totalCount << endl;
+
 			}
 
 			cout << "purple"<< endl;			
