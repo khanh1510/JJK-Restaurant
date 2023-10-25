@@ -783,7 +783,12 @@ class imp_res : public Restaurant
 						}
 					}
 				}
-
+				
+				customer* iphone_promax = result_dau;
+				while (iphone_promax != result_cuoi->next) {
+					iphone_promax->print();
+					iphone_promax = iphone_promax->next;
+				}
 				// cout << "result dau " << result_dau->name << endl;
 				// cout << "result cuoi" << result_cuoi->name << endl;
 				// cout << "Tong nang luong nho nhat cua day con la: " << RES << endl;
