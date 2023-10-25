@@ -88,7 +88,7 @@ class LinkedList{
 			Node* current = head;
 			Node* prev = nullptr;
 
-			while (current) {
+			while (current != nullptr) {
 				if (current->name == na) {
 					if (prev) {
 						prev->next = current->next;
@@ -98,6 +98,7 @@ class LinkedList{
 					}
 
 					delete current;
+					break;
 				}
 
 				prev = current;
@@ -181,6 +182,15 @@ class LinkedList{
 			return current;
 		}
 
+		Node* index(int n, Node* start) {
+			Node* temp = start;
+			while (n--) {
+				temp = temp->next;
+			}
+
+			return temp;
+		}
+
 		int getSize(Node* endNode) {
 			int size = 1;
 			Node* current = head;
@@ -192,21 +202,25 @@ class LinkedList{
 			return size;
 		}
 
-		void swappp(int a, int b) {
-			Node* nodeA = getNodeAt(a);
-			Node* nodeB = getNodeAt(b);
+		// void swappp(int a, int b) {
+		// 	Node* nodeA = getNodeAt(a);
+		// 	Node* nodeB = getNodeAt(b);
 
-			if (nodeA != nullptr && nodeB != nullptr) {
-				swap(nodeA->energy, nodeB->energy);
-				swap(nodeA->name, nodeB->name);
-			}
-		}
+		// 	if (nodeA != nullptr && nodeB != nullptr) {
+		// 		swap(nodeA->energy, nodeB->energy);
+		// 		swap(nodeA->name, nodeB->name);
+		// 	}
+		// }
 
-		int inssort2(int n, int incr) {
+		int inssort2(Node* start, int n, int incr) {
 			int swapCount = 0;
 			for (int i = incr; i < n; i += incr) {
-				for (int j = i; (j >= incr) && (abs(getNodeAt(j)->energy) > abs(getNodeAt(j-incr)->energy)); j-=incr) {
-					swappp(j, j-incr);
+				for (int j = i; (j >= incr) && (abs(index(j, start)->energy) > abs(index(j-incr, start)->energy)); j-=incr) {
+					Node* a = index(j, start);
+					Node* b = index(j-incr, start);
+
+					swap(a->name, b->name);
+					swap(a->energy, b->energy);
 					swapCount++;
 				}
 			}
@@ -218,10 +232,14 @@ class LinkedList{
 			int totalSwap = 0;
 			for (int i = n/2; i > 2; i/=2) {
 				for (int j = 0; j < i; j++) {
-					totalSwap += inssort2(n-j, i);
+					Node* star = head;
+					for (int h = 0; h < j; h++) {
+						star = star->next;
+					}
+					totalSwap += inssort2(star, n-j, i);
 				}
 			}
-			totalSwap += inssort2(n, 1);
+			totalSwap += inssort2(head, n, 1);
 
 			return totalSwap;
 		}
@@ -371,14 +389,13 @@ class imp_res : public Restaurant
 						tail->next = head;
 						head->prev = tail;
 
-						if (temp->name == X->name) {
-							if (X->energy > 0) {
-								X = X->next;
-							}
-							else {
-								X = X->prev;
-							}
+						if (temp->energy > 0) {
+							X = temp->next;
 						}
+						else {
+							X = temp->prev;
+						}
+
 						delete temp;
 
 						numCustomer--;
@@ -390,13 +407,11 @@ class imp_res : public Restaurant
 						prevNode->next = nextNode;
 						nextNode->prev = prevNode;
 
-						if (temp->name == X->name) {
-							if (X->energy > 0) {
-								X = X->next;
-							}
-							else {
-								X = X->prev;
-							}
+						if (temp->energy > 0) {
+							X = temp->next;
+						}
+						else {
+							X = temp->prev;
 						}
 						
 						delete temp;
@@ -664,11 +679,10 @@ class imp_res : public Restaurant
 
 				totalCount = queCustomer.shellSort(saiz);
 
+
 			}
 			BLUE(totalCount % MAXSIZE);
 
-
-						
 		}
 		void REVERSAL()
 		{
@@ -694,34 +708,36 @@ class imp_res : public Restaurant
 			}
 
 			string name_Of_X = X->name;
+			//cout << "Coi ne: " << name_Of_X << endl;
 			//int energy_Of_X = X->energy;
 
-			temp = temp->prev;
+			temp = X;
 
 			for (int i = 0; i < numCustomer; i++) {
 				if (temp->energy > 0) {
-					temp->energy = positive.head->energy;
 					temp->name = positive.head->name;
+					temp->energy = positive.head->energy;
 
 					positive.removeHead();
 				}
 				else {
-					temp->energy = negative.head->energy;
 					temp->name = negative.head->name;
+					temp->energy = negative.head->energy;
 
 					negative.removeHead();
 				}
 
 				temp = temp->prev;
 			}
-
-			temp = temp->prev;
-
-			for (int j = 0; j < numCustomer; j++) {
-				if (temp->name == name_Of_X) {
-					X = temp;
+			
+			customer* hmm = X;
+			for (int i = 0; i < numCustomer; i++) {
+				if (hmm->name == name_Of_X) {
+					X = hmm;
+					break;
 				}
-			}	
+				hmm = hmm->next;
+			}
 
 		}
 		void UNLIMITED_VOID()
@@ -838,8 +854,17 @@ class imp_res : public Restaurant
 				}
 			}
 			else {			//Đuổi hết chú thuật sư
-				Node* temp_kick = FiFOCustomer.head;
+				
+				Node* temp_haiz = FiFOCustomer.head;
 				Node* wait_kick = queCustomer.head;
+
+				LinkedList haizz;
+				while (temp_haiz != nullptr) {
+					haizz.addHead(temp_haiz->name, temp_haiz->energy);
+					temp_haiz = temp_haiz->next;
+				}
+
+				Node* temp_kick = haizz.head;
 
 				while (temp_kick != nullptr) {
 					if (temp_kick->energy > 0) {
@@ -852,6 +877,7 @@ class imp_res : public Restaurant
 					}
 					temp_kick = temp_kick->next;
 				}
+				
 
 				//Toàn bộ khúc trên là xoá chú thuật sư trong bàn ăn và trong FIFOcustomer
 				//GIờ cần phải xoá ở hàng chờ nữa
