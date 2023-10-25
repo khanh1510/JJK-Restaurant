@@ -1,62 +1,46 @@
-void UNLIMITED_VOID() {
-    cout << "unlimited void" << endl;
-    if (head == nullptr || size < 4) {
-        return;
-    }
-    
-    customer* temp = head;
-    int sumMin = 2^7 - 1;
-    customer* minHead = nullptr;
-    
-    do {
-        customer* tmp = temp;
-        int demm = 0;
-        int min = 0;
-        customer* Min = nullptr;
-        customer* Minn = nullptr;
+/******************************************************************************
 
-        do {
-            min += tmp->energy;
-            customer* moi = new customer(tmp->name, tmp->energy, nullptr, nullptr);
-            demm++;
-            
-            if (demm >= 4 && min < sumMin) {
-                sumMin = min;
-                minHead = Min;
-            }
-            else if (demm >= 4 && min > sumMin) {
-                break;
-            }
+Welcome to GDB Online.
+GDB online is an online compiler and debugger tool for C, C++, Python, Java, PHP, Ruby, Perl,
+C#, OCaml, VB, Swift, Pascal, Fortran, Haskell, Objective-C, Assembly, HTML, CSS, JS, SQLite, Prolog.
+Code, Compile, Run and Debug online from anywhere in world.
 
-            if (Min == nullptr) {
-                Min = moi;
-                Min->next = Min;
-                Min->prev = Min;
-                Minn = Min;
+*******************************************************************************/
+#include <iostream>
+
+using namespace std;
+
+
+
+int main()
+{
+    int arr[] = {7,6,5,4};
+    
+    
+    int n = 4;
+    int res = arr[0] + arr[1] + arr[2] + arr[3];
+    int test = 0;
+    for (int h = 4; h <= n; h++) {
+        int sum = 0;
+        for (int i = 0; i < h; i++) sum += arr[i];
+        int idx = 0;
+        for (int i = h; i < n; i++) {
+            sum = sum - arr[i - h] + arr[i];
+            if (sum < res) {
+                res = sum;
+                idx = i - h + 1;
+                test = idx;
             }
-            else {
-                if (Min->energy > tmp->energy) {
-                    Min = insertBefore(Min, moi);
-                    Minn = Min;
-                }
-                else {
-                    Min = insertAfter(Min, moi);
-                }
-            }
-            
-            tmp = tmp->prev;
-        } while (tmp != temp);
+        }
         
-        temp = temp->next; // Move to the next customer in the circular list
-    } while (temp != head);
 
-    if (minHead == nullptr) {
-        return;
     }
-
-    customer* tmpp = minHead;
-    do {
-        tmpp->print();
-        tmpp = tmpp->next;
-    } while (tmpp != minHead && tmpp != nullptr);
+    cout << "test " << test << endl;
+    cout << res << endl;
+    for (int j = 0; j < ; j++) {
+        cout << arr[test + j] << " " ;
+    }
+    cout << endl;
+    
+    return 0;
 }

@@ -21,31 +21,3 @@ void UNLIMITED_VOID() {
                     sumMin = min;
                     minHead = Minn;
                 }
-                else if (demm >= 4 && min > sumMin) break;
-                if (Min == nullptr) {
-                    Min = moi;
-                    Min->next = Min;
-                    Min->prev = Min;
-                    Minn = Min;
-                }
-                else {
-                    if (Min->energy > tmp->energy) {
-                        Min = insertBefore(Min, moi);
-                        Minn = Min;
-                    }
-                    else {
-                        Min = insertAfter(Min, moi);
-                    }
-                }
-                tmp = tmp->prev;
-            }
-            while (tmp != temp);
-            temp = temp->prev;
-    }while (temp != head);
-    if (minHead == NULL) return;
-    customer* tmpp = minHead;
-    do {
-        tmpp->print();
-        tmpp = tmpp->prev;
-    } while (tmpp != minHead && tmpp != nullptr);
-}

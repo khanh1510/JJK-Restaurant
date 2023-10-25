@@ -457,8 +457,8 @@ class imp_res : public Restaurant
 
 		void RED(string name, int energy)
 		{
-			cout << "red" << endl;
-			cout << name << " " << energy << endl;
+			//cout << "red" << endl;
+			//cout << name << " " << energy << endl;
 			customer *cus = new customer (name, energy, nullptr, nullptr);
 			if (MAXSIZE == 1) {
 				head = cus;
@@ -553,7 +553,7 @@ class imp_res : public Restaurant
 		//Để ý thêm là cần phải xoá cả trong Timer Queue
 		void BLUE(int num)		//Invite customer get out of here
 		{
-			cout << "blue "<< num << endl;
+			//cout << "blue "<< num << endl;
 			if (num == 0) {
 				return;		//Do nothing
 			}
@@ -664,7 +664,7 @@ class imp_res : public Restaurant
 		}
 		void PURPLE()
 		{
-			cout << "purple"<< endl;
+			//cout << "purple"<< endl;
 			int totalCount = 0;
 			if (queCustomer.size == 0 || queCustomer.size == 1) {
 				return;
@@ -687,7 +687,7 @@ class imp_res : public Restaurant
 		void REVERSAL()
 		{
 
-			cout << "reversal" << endl;
+			//cout << "reversal" << endl;
 
 			if (numCustomer == 0 || numCustomer == 1) {		//If num Customer is 0 or 1 just do nothing
 				return;
@@ -740,62 +740,60 @@ class imp_res : public Restaurant
 			}
 
 		}
+		
 		void UNLIMITED_VOID()
 		{
 
-			cout << "unlimited_void" << endl;
-
-			if (numCustomer < 4) {
+			// cout << "unlimited_void" << endl;
+			// cout << "ten cua X next la: " << X->next->name << endl;
+			if (numCustomer < 4) {		//Neu nhu ban an it hon 4 nguoi do nothing
 				return;
 			}
-			int min_energy = X->energy;
-			int last_min_energy = X->energy;
-			int current_energy = 0;
-			int current_length = 0;
-			customer* min_energy_start = nullptr;
-
-			customer* current = X;
-			customer* start = X;
-
-			do {
-				current_energy += current->energy;
-				current_length++;
-
-				//Check if we found the min energy
-				if (current_energy < min_energy && current_length >= 4) {
-					min_energy = current_energy;
-					min_energy_start = start;
-					last_min_energy = min_energy;
+			else {		//Ban an nhieu hon 4 nguoi 
+				int RES = 0;
+				customer* first_four = X;
+				for (int i = 0; i < 4; i++) {		//Co tong nang luong cua 4 thang dau tien
+					RES += first_four->energy;
+					first_four = first_four->next;
 				}
-				else if (current_energy == last_min_energy) {
-					last_min_energy = current_energy;
+				//cout << "tong nang luong cua 4 tk dau tien " << RES << endl;
+
+				customer* result_dau = X;
+				customer* result_cuoi = first_four->prev;
+
+				for (int k = 4; k <= numCustomer; k++) {
+					int sum = 0;
+					customer* dau = X;
+					customer* cuoi = nullptr;
+					customer* temp = X;
+					for (int i = 0; i < k; i++) {
+						sum += temp->energy;
+						temp = temp->next;
+					}
+					cuoi = temp->prev;
+
+					for (int j = 0; j < numCustomer; j++) {
+						dau = dau->next;
+						cuoi = cuoi->next;
+						sum = sum - dau->prev->energy + cuoi->energy;
+						if (sum <= RES) {
+							RES = sum;
+							result_dau = dau;
+							result_cuoi = cuoi;
+						}
+					}
 				}
 
-				current = current->next;
+				// cout << "result dau " << result_dau->name << endl;
+				// cout << "result cuoi" << result_cuoi->name << endl;
+				// cout << "Tong nang luong nho nhat cua day con la: " << RES << endl;
 
-				if (current == X) {
-					start = start->next;
-					current = start;
-					current_energy = 0;
-					current_length = 0;
-				}
 			}
-			while (current != X);
-
-			//We print all customer in the min ENERGY
-			if (min_energy_start != nullptr) {
-				//cout << "Day con co tong ENERGY nho nhat: " << min_energy << endl;
-				current = min_energy_start;
-				do {
-					cout << current->name << "-" << current->energy << endl;
-					current = current->next;
-				}
-				while (current != min_energy_start);
-			}
+			
 		}
 		void DOMAIN_EXPANSION()			//Kick the customers
 		{
-			cout << "domain_expansion" << endl;
+			//cout << "domain_expansion" << endl;
 			//cout << sumEnergy(1) << " " << sumEnergy(0) << endl;
 			if (numCustomer == 0 || numCustomer == 1) {
 				//cout << "test" << endl;
@@ -975,7 +973,7 @@ class imp_res : public Restaurant
 		}
 		void LIGHT(int num)
 		{
-			cout << "light " << num << endl;
+			//cout << "light " << num << endl;
 			
 			if (num == 0) {
 				Node* temp = queCustomer.head;
