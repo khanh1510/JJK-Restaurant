@@ -17,11 +17,6 @@ The story revolves around Gojo and Sukuna managing their own restaurants before 
 - Ensure only `#include "main.h"` is used in `restaurant.cpp`.
 - The program should properly handle memory allocation and deallocation.
 
-## Submission Guidelines
-- Submit only `restaurant.cpp` before the deadline.
-- Multiple submissions are allowed, but only the last submission will be graded.
-- Late submissions will not be accepted.
-
 ## Academic Integrity
 - All code must be written individually.
 - Any suspicious similarity between submissions will be considered plagiarism.
